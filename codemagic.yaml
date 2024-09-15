@@ -1,0 +1,36 @@
+workflows:
+  ios-workflow:
+    name: iOS Workflow
+    max_build_duration: 60
+    environment:
+      flutter: stable
+      xcode: latest
+      cocoapods: default
+      # Add your Apple Developer account credentials if using automatic signing
+      # apple_signin:
+      #   apple_id: $APPLE_ID
+      #   password: $APPLE_PASSWORD
+      #   team_id: $APPLE_TEAM_ID
+    triggering:
+      events:
+        - push
+        - pull_request
+    scripts:
+      - name: Install Flutter dependencies
+        script: |
+          flutter packages get
+      - name: Build iOS App
+        script: |
+          flutter build ios --release --no-codesign
+    artifacts:
+      - build/ios/ipa/*.ipa
+      - build/ios/ipa/*.app
+    publishing:
+      email:
+        recipients:
+          - your_email@example.com
+      app_store_connect:
+        apple_id: $APPLE_ID
+        password: $APPLE_PASSWORD
+        team_id: $APPLE_TEAM_ID
+        submit_to_testflight: true
